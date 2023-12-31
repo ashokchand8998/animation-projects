@@ -1,0 +1,22 @@
+{
+  "name": "first-animation",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "open-simplex-noise": "^2.5.0",
+    "three": "^0.160.0",
+    "vite": "^5.0.10"
+  },
+  "devDependencies": {
+    "three-orbitcontrols": "^2.110.3"
+  }
+}
