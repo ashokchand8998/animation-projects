@@ -27,23 +27,24 @@ cube.position.y = 3;
 
 scene.add(cube);
 
-let sphereGeometry = new THREE.SphereGeometry(1.5, 100, 100);
+let sphereGeometry = new THREE.SphereGeometry(3, 75, 75);
 
-sphereGeometry.positionData = [];
+// sphereGeometry.
+let positionData = [];
 let v3 = new THREE.Vector3();
 for (let i = 0; i < sphereGeometry.attributes.position.count; i++) {
     v3.fromBufferAttribute(sphereGeometry.attributes.position, i);
-    sphereGeometry.positionData.push(v3.clone());
+    positionData.push(v3.clone());
 }
 
 const weirdSphere = new THREE.Mesh(sphereGeometry, new THREE.MeshPhongMaterial({ color: 'pink' }));
-scene.add(weirdSphere);
+// scene.add(weirdSphere);
 
 
 
-const particleSystem = new THREE.Points(new THREE.SphereGeometry(3, 100, 100), new THREE.PointsMaterial({
+const particleSystem = new THREE.Points(sphereGeometry, new THREE.PointsMaterial({
     color: "yellow",
-    size: 0.005
+    size: 0.05
 }));
 particleSystem.name = "ParticlSystem";
 particleSystem.position.x = 0;
@@ -77,7 +78,7 @@ renderer.setSize(sizes.width, sizes.height)
 console.log("openSimplexNoise", openSimplexNoise)
 let noise = openSimplexNoise.makeNoise4D(Date.now());
 let clock = new THREE.Clock();
-renderer.setClearColor ("dark-grey", 1)
+renderer.setClearColor("dark-grey", 1)
 
 new OrbitControls(camera, renderer.domElement);
 
@@ -85,18 +86,22 @@ new OrbitControls(camera, renderer.domElement);
 function animate() {
     requestAnimationFrame(animate);
 
-    // particleSystem.rotation.x += 0.01;
-    // particleSystem.rotation.y += 0.01;
+    // particleSystem.rotation.x += 0.005;
+    // particleSystem.rotation.y += 0.005;
 
     let t = clock.getElapsedTime();
-    sphereGeometry.positionData.forEach((p, idx) => {
+    positionData.forEach((p, idx) => {
         // Create noise for each point in our sphere
-        let setNoise = noise(p.x, p.y, p.z, t * 1.05);
+        let setNoise = noise(p.x, p.y, p.z, t * 2.05);
         // Using our Vector3 function, copy the point data, and multiply it by the noise
         // this looks confusing - but it's just multiplying noise by the position at each vertice
-        v3.copy(p).addScaledVector(p, setNoise);
+        v3.copy(p)//.addScaledVector(p, setNoise);
         // Update the positions
-        sphereGeometry.attributes.position.setXYZ(idx, v3.x, v3.y, v3.z);
+        sphereGeometry.attributes.position.setXYZ(idx,
+            v3.x += 0.5 * setNoise,
+            v3.y += 0.5 * setNoise,
+            v3.z += 0.35 * setNoise
+        );
     })
     // Some housekeeping so that the sphere looks "right"
     sphereGeometry.computeVertexNormals();
